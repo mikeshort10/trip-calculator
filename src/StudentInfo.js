@@ -21,6 +21,8 @@ export default class StudentInfo extends Component {
 			<div key={i}>
 				<Form.Label>{this.props.buttons[i].label}</Form.Label>
 				<Form.Control 
+				type="number"
+				min="1"
 				onChange={this.adjustState(this.props.buttons[i].key)} 
 				value={this.state[this.props.buttons[i].key]} />
 			</div>)
@@ -36,7 +38,7 @@ export default class StudentInfo extends Component {
 
 	render() {
 		return(
-			<Modal show={true}>
+			<Modal show={this.props.modal.show}>
 				<Modal.Header>
 					<Modal.Title style={{textAlign: 'center', width: '100%'}}>{this.props.title}</Modal.Title>
 				</Modal.Header>

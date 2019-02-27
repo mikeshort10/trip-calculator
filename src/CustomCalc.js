@@ -16,8 +16,7 @@ function Multipliers (props) {
 }
 
 function LineItem (props) {
-	let cn = "";
-
+	
 	function click (event) {
 		console.log('x', window.activeElement)
 		props.handleChange(props.num, "multiplier")(event);
@@ -31,16 +30,8 @@ function LineItem (props) {
 		if (display === "flex") document.getElementsByClassName('better-select')[props.num].focus();
 	}
 
-	function renderDropdownItems () {
+	function renderDropdownItems (options) {
 		let arr = [];
-		let options = [
-			"Flat Rate", 
-			"Per Student", 
-			"Per Chaperone", 
-			"Per Person", 
-			"Per Vehicle", 
-			"Per Hotel Room"
-		];
 		for (let i = 0; i < options.length; i++) {
 			arr.push(<Multipliers 
 				key={i} 
@@ -57,8 +48,7 @@ function LineItem (props) {
 			<input 
 			onChange={props.handleChange(props.num, "costName")} 
 			placeholder="Cost Name" 
-			value={props.lineItem.costName}
-			className={cn} />
+			value={props.lineItem.costName}/>
 			<input
 			type="number"
 			onChange={props.handleChange(props.num, "unitCost")} 
@@ -76,7 +66,14 @@ function LineItem (props) {
 				tabindex={0} 
 				className="better-select">
 					<div id={`select-menu-${props.num}`}  className="select-menu">
-						{renderDropdownItems()}
+						{renderDropdownItems([
+							"Flat Rate", 
+							"Per Student", 
+							"Per Chaperone", 
+							"Per Person", 
+							"Per Vehicle", 
+							"Per Hotel Room"
+						])}
 						<input 
 						min={1}
 						type="number" 
@@ -91,20 +88,22 @@ function LineItem (props) {
 				? "---"
 				: '$' + Number(props.lineItem.totalCost).toFixed(2)}
 			</div>
-			{props.showDeleteButton ?
+			<div className="li-buttons">
+				{props.showDeleteButton ?
+					<button 
+					className="delete-line-item" 
+					type="button"
+					onClick={() => props.removeLineItem(props.num)} >
+						<i className="fa fa-trash" />
+					</button>
+					: ""}
 				<button 
-				className="delete-line-item" 
+				className="add-line-item" 
 				type="button"
-				onClick={() => props.removeLineItem(props.num)} >
-					<i className="fa fa-trash" />
+				onClick={() => props.addLineItem(props.num)} >
+					<i className="fa fa-plus" />
 				</button>
-				: ""}
-			<button 
-			className="add-line-item" 
-			type="button"
-			onClick={() => props.addLineItem(props.num)} >
-				<i className="fa fa-plus" />
-			</button>
+			</div>
 		</div>
 
 

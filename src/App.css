@@ -1,17 +1,25 @@
-body, html, #container {
+body, html {
 	width: 100vw;
-}
-
-html {
-	overflow: hidden;
 }
 
 button:focus, input:focus, select:focus {
 	outline: none;
 }
 
-input, div.ddmenu, .add-line-item, .delete-line-item, .total-cost {
+input, div.ddmenu, .li-buttons, .total-cost, .total-label {
 	width: 20%;
+	text-align: center;
+	border-radius: 5px;
+	border: grey solid 1px;
+}
+
+.li-buttons {
+	display: flex;
+	border: none;
+}
+
+button {
+	flex: 1 1 auto;
 	text-align: center;
 	border-radius: 5px;
 	border: grey solid 1px;
@@ -25,7 +33,7 @@ div.ddmenu {
 	background: green;
 }
 
-.better-select {
+.better-select, .upcharge-select {
 	display: flex;
 	position: relative;
 	flex-direction: column;
@@ -36,6 +44,7 @@ div.ddmenu {
 .ddbutton {
 	background-color: white;
 	width: 100%;
+	height: 100%;
 	text-align: center;
 	border-radius: 5px;
 	border: grey solid 1px;
@@ -53,7 +62,7 @@ div.ddmenu {
 	justify-content: space-around;
 }
 
-.select-menu {
+.select-menu, .upcharge-menu {
 	z-index: 2;
 	position: absolute;
 	top: 0;
@@ -70,7 +79,7 @@ div.ddmenu {
 	min-width: max-content;
 }
 
-.select-menu input {
+.select-menu input, .upcharge-menu input {
 	text-align: left;
 	padding-left: 5px;
 	width: 100%;
@@ -89,6 +98,22 @@ div.ddmenu {
 	user-select: none;
 }
 
+.total-label {
+	flex-basis: 60%;
+	text-align: center;
+}
+
+.total-output {
+	flex-basis: 20%;
+}
+
+.totals {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: start;
+}
+
 .choice {
 	width: 100%;
 	border: none;
@@ -102,9 +127,14 @@ div.ddmenu {
 
 #calculator {
 	margin: auto;
-	width: 100vw;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+}
+
+#container {
+	width: 80%;
+	margin: 50px auto;
 }
 

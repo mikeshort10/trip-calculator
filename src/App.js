@@ -5,6 +5,20 @@ import CustomCalc from './CustomCalc';
 import StudentInfo from './StudentInfo';
 import { Form, InputGroup, Dropdown } from 'react-bootstrap';
 
+//make sure total, subtotal, and upcharge match up
+
+function Multipliers (props) {
+
+	return(
+		<button
+		className="choice"
+		type="button"
+		onClick={props.click || undefined} 
+		value={props.title || undefined}>
+			{props.title}
+		</button>)
+}
+
 class App extends Component {
 	constructor(props) {
 		super(props);
@@ -103,6 +117,7 @@ class App extends Component {
 		switch (this.state.modal.type) {
 			case 'Student Info':
 				return (<StudentInfo
+				modal={this.state.modal}
 				title={this.state.modal.type} 
 				buttons={this.state.buttons[0]} 
 				data={{key: "students", data: this.state.students}} 
@@ -110,6 +125,7 @@ class App extends Component {
 				next={{show: true, type: "Chaperone Info"}}/>);
 			case 'Chaperone Info':
 				return (<StudentInfo
+				modal={this.state.modal}
 				title={this.state.modal.type} 
 				buttons={this.state.buttons[1]} 
 				data={{key: "chaperones", data: this.state.chaperones}} 
@@ -162,23 +178,31 @@ class App extends Component {
 			items[num].totalCost = "ERROR"
 		else {
 			items[num].unitCost = Number(items[num].unitCost).toFixed(2);
-			console.log(items[num].unitCost, Number(items[num].unitCost))
 			items[num].totalCost = (Number(items[num].unitCost) * multiplyBy());
 		}
 		this.setState({ lineItems: items }, this.calculateTotal)
 	}
 
 	calculateTotal () {
-		let total = 0;
+		let subtotal = 0;
 		for (let i = 0; i < this.state.lineItems.length; i++) 
-			total += this.state.lineItems[i].totalCost;
-		total = total;
-		this.setState({ total });
+			subtotal += this.state.lineItems[i].totalCost;
+		subtotal = subtotal;
+		this.setState({ subtotal, total: this.state.subtotal * (1 + this.state.upcharge) });
 	}
 
-	adjustUpcharge (percent) {
-		this.setState({ upcharge: percent })
+	adjustUpcharge = percent => event => {
+		percent = percent || Number(event.target.value)/100;
+		document.getElementsByClassName(`upcharge-menu`)[0].style.display = "none";
+		this.setState({ upcharge: percent, total: this.state.subtotal * (1 + percent) })
 	}
+
+	openClose () {
+		let display = (document.getElementsByClassName(`upcharge-menu`)[0].style.display === "flex") ? "none" : "flex";
+		document.getElementsByClassName(`upcharge-menu`)[0].style.display = display;
+		if (display === "flex") document.getElementsByClassName('upcharge-select')[0].focus();
+	}
+
 
 	render() {
 		return (
@@ -192,64 +216,78 @@ class App extends Component {
 				lineItems={this.state.lineItems} 
 				addLineItem={this.addLineItem}
 				removeLineItem={this.removeLineItem} />
-				<Form>
-					<InputGroup>
-						<InputGroup.Prepend>
-							<InputGroup.Text>Total $</InputGroup.Text>
-						</InputGroup.Prepend>
-						<Form.Control 
+				<div>
+					<div className="totals">
+						<div className="total-label">Subtotal</div>
+						<input 
+						className="total-output"
+						value={isNaN(this.state.subtotal) 
+							? "---" : 
+							'$' + Number(this.state.subtotal).toFixed(2)} 
+						disabled/>
+					</div>
+					<div className="totals">
+						<div style={{border: 'none'}} className="total-label">
+								<button 
+								className="ddbutton"
+								type="button" 
+								onClick={this.openClose}>
+									{Number(this.state.upcharge) * 100 + "% Upcharge"}
+								</button>	
+								<div 
+								tabindex={0} 
+								className="upcharge-select">
+									<div className="upcharge-menu">
+										<Multipliers 
+										click={this.adjustUpcharge(0)}
+										title="0% Upcharge"/>
+										<Multipliers 
+										click={this.adjustUpcharge(0.05)}
+										title="5% Upcharge"/>
+										<Multipliers 
+										click={this.adjustUpcharge(0.10)}
+										title="10% Upcharge"/>
+										<Multipliers 
+										click={this.adjustUpcharge(0.15)}
+										title="15% Upcharge"/>
+										<Multipliers 
+										click={this.adjustUpcharge(0.20)}
+										title="20% Upcharge"/>
+										<input 
+										min={1}
+										type="number"
+										onBlur={this.adjustUpcharge()} 
+										//onBlur={click} 
+										placeholder="Custom Percentage"/>
+									</div>
+								</div>
+						</div>
+						<input 
+						className="total-output"
+						value={isNaN(this.state.subtotal)
+							? "---" 
+							: '$' + (this.state.subtotal*this.state.upcharge).toFixed(2)} 
+						disabled/>
+					</div>
+					<div className="totals">
+						<div className="total-label">Total</div>
+						<input 
+						className="total-output"
 						value={isNaN(this.state.total) 
 							? "---" : 
-							Number(this.state.total).toFixed(2)} 
+							'$' + Number(this.state.total).toFixed(2)} 
 						disabled/>
-					</InputGroup>
-					<InputGroup>
-						<InputGroup.Prepend>
-							<InputGroup.Text>Cost Per Student</InputGroup.Text>
-						</InputGroup.Prepend>
-						<Form.Control 
-						value={isNaN(this.state.total/this.state.students.total)
-							? "---" 
-							: (this.state.total/this.state.students.total).toFixed(2)} 
+					</div>
+					<div className="totals">
+						<div className="total-label">Per Student</div>
+						<input 
+						className="total-output"
+						value={isNaN(this.state.total/this.state.students.total) 
+							? "---" : 
+							'$' + Number(this.state.total/this.state.students.total).toFixed(2)} 
 						disabled/>
-					</InputGroup>
-					<InputGroup>
-						<InputGroup.Prepend>
-							<Dropdown>
-								<Dropdown.Toggle split>
-									{Number(this.state.upcharge) * 100 + "% Upcharge"}
-								</Dropdown.Toggle>
-								<Dropdown.Menu>
-									<Dropdown.Item 
-									onClick={() => this.adjustUpcharge(0)}>
-										0% Upcharge
-									</Dropdown.Item>
-									<Dropdown.Item 
-									onClick={() => this.adjustUpcharge(0.05)}>
-										5% Upcharge
-									</Dropdown.Item>
-									<Dropdown.Item 
-									onClick={() => this.adjustUpcharge(0.1)}>
-										10% Upcharge
-									</Dropdown.Item>
-									<Dropdown.Item 
-									onClick={() => this.adjustUpcharge(0.15)}>
-										15% Upcharge
-									</Dropdown.Item>
-									<Dropdown.Item 
-									onClick={() => this.adjustUpcharge(0.20)}>
-										20% Upcharge
-									</Dropdown.Item>
-								</Dropdown.Menu>
-							</Dropdown>
-						</InputGroup.Prepend>
-						<Form.Control 
-						value={isNaN(this.state.total/this.state.students.total)
-							? "---" 
-							: (this.state.total/this.state.students.total*this.state.upcharge).toFixed(2)} 
-						disabled/>
-					</InputGroup>
-				</Form>
+					</div>
+				</div>
 			</div>
 		);
 	}
