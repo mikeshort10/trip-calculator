@@ -1,0 +1,98 @@
+.delete-button {
+  background: red;
+  width: 100%;
+}
+
+button,
+input,
+select {
+  &:focus {
+    outline: none;
+  }
+}
+
+rect:hover {
+  fill: orange;
+}
+
+button {
+  border: black solid 1px;
+  color: white;
+  border-radius: 10px;
+  padding: 5px;
+  width: 100%;
+  background: green;
+  font-size: 18px;
+}
+
+input:disabled {
+  background: #000;
+  color: white;
+}
+
+table {
+  margin: 25px auto;
+}
+
+input {
+  text-align: center;
+}
+
+.metadata-input > input {
+  width: 50px;
+}
+
+td {
+  text-align: right;
+}
+
+th {
+  padding: 5px;
+}
+input,
+select {
+  border-radius: 5px;
+  border: solid black 1px;
+  padding: 5px;
+  font-size: 20px;
+}
+
+#min-max {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 50%;
+  margin: auto;
+}
+
+#metadata-and-graph {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+  justify-content: space-around;
+}
+
+body.calculator {
+  background: hsl(270, 50, 30);
+  color: white;
+  font-size: 20px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type='number'] {
+  -moz-appearance: textfield; /* Firefox */
+}
